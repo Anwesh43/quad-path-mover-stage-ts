@@ -103,13 +103,13 @@ class QPNode {
         context.strokeStyle = '#1976D2'
         context.lineCap = 'round'
         context.lineWidth = Math.min(w, h) / 60
-        const gap : number = (0.9 * w) / (nodes + 1)
+        const gap : number = (0.9 * w) / (nodes)
         const index : number = this.i % 2
         const factor : number = 1 - 2 * index
         const sc1 : number = Math.min(0.5, this.state.scale) * 2
         const sc2 : number = Math.min(0.5, Math.max(0, this.state.scale - 0.5)) * 2
         context.save()
-        context.translate(this.i * gap + gap / 2, h/2 - gap / 2)
+        context.translate(0.05 * w + this.i * gap + gap / 2, h/2 - gap / 2)
         context.scale(1, factor)
         if (sc1 != 0) {
             context.beginPath()
@@ -128,6 +128,9 @@ class QPNode {
         context.arc(-gap/2 + gap/2 * sc1 + gap/2 * sc2, gap/2 - gap * sc1, gap/15, 0, 2 * Math.PI)
         context.fill()
         context.restore()
+        if (this.prev) {
+            this.prev.draw(context)
+        }
     }
 
     update(cb : Function) {
