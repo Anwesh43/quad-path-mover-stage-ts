@@ -140,3 +140,23 @@ class QPNode {
         return this
     }
 }
+
+class LinkedQP {
+    curr : QPNode = new QPNode(0)
+    dir : number = 1
+    update(cb : Function) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir *= -1
+            })
+        })
+    }
+
+    startUpdating(cb : Function) {
+        this.curr.startUpdating(cb)
+    }
+
+    draw(context : CanvasRenderingContext2D) {
+        this.curr.draw(context)
+    }
+}
