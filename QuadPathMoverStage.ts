@@ -1,5 +1,5 @@
 const w : number = window.innerWidth, h : number = window.innerHeight
-const nodes : number = 5
+const nodes : number = 6
 class QuadPathMoverStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
@@ -88,7 +88,7 @@ class QPNode {
     prev : QPNode
     next : QPNode
     state : State = new State()
-    constructor(private i : number) {
+    constructor(public i : number) {
         this.addNeighbor()
     }
 
@@ -99,7 +99,10 @@ class QPNode {
         }
     }
 
-    draw(context : CanvasRenderingContext2D) {
+    draw(context : CanvasRenderingContext2D, currI : number) {
+        if (this.prev) {
+            this.prev.draw(context, currI)
+        }
         context.strokeStyle = '#1976D2'
         context.lineCap = 'round'
         context.lineWidth = Math.min(w, h) / 60
@@ -123,14 +126,13 @@ class QPNode {
             context.lineTo(gap/2 * sc2, -gap/2)
             context.stroke()
         }
-        context.fillStyle = 'white'
-        context.beginPath()
-        context.arc(-gap/2 + gap/2 * sc1 + gap/2 * sc2, gap/2 - gap * sc1, gap/15, 0, 2 * Math.PI)
-        context.fill()
-        context.restore()
-        if (this.prev) {
-            this.prev.draw(context)
+        if (currI == this.i) {
+            context.fillStyle = 'white'
+            context.beginPath()
+            context.arc(-gap/2 + gap/2 * sc1 + gap/2 * sc2, gap/2 - gap * sc1, gap/15, 0, 2 * Math.PI)
+            context.fill()
         }
+        context.restore()
     }
 
     update(cb : Function) {
@@ -170,6 +172,6 @@ class LinkedQP {
     }
 
     draw(context : CanvasRenderingContext2D) {
-        this.curr.draw(context)
+        this.curr.draw(context, this.curr.i)
     }
 }
