@@ -3,6 +3,8 @@ const nodes : number = 5
 class QuadPathMoverStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
+    linkedQP : LinkedQP = new LinkedQP()
+    animator : Animator = new Animator()
     constructor() {
         this.initCanvas()
         this.render()
@@ -17,13 +19,21 @@ class QuadPathMoverStage {
     }
 
     render() {
-        this.context.fillStyle = '#212121'
+        this.context.fillStyle = '#263238'
         this.context.fillRect(0, 0, w, h)
+        this.linkedQP.draw(this.context)
     }
 
     handleTap() {
         this.canvas.onmousedown = () => {
-
+            this.linkedQP.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.linkedQP.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
         }
     }
 
